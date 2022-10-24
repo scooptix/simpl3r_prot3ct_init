@@ -1,33 +1,35 @@
 import * as web3 from "@solana/web3.js";
+import bs58 from "bs58";
 import getMintIdsFromCMID from "./utils/get_mintIds_from_CMID";
 import { updateMetadataUrls } from "./utils/theft_protection";
+import { CMID, PROJECTID, UAKEY, RPCNODE } from "./config.json";
 
 async function init() {
   console.log("Welcome to the Simpl3r Prot3ct initializer.");
   console.log("Feel free to review the code before executing it with your private information.");
 
-  const cmID = process.env.CMID;
-  const projectId = process.env.PROJECTID;
-  const uaKey = process.env.UAKEY;
-  const rpc = process.env.RPCNODE;
-
-  if (!cmID || !projectId || !uaKey || !rpc) {
+  if (!CMID || !PROJECTID || !UAKEY || !RPCNODE) {
     console.log("Please provide all required values");
   } else {
     try {
-      const connection = new web3.Connection(rpc);
+      const connection = new web3.Connection(RPCNODE);
 
-      const mintIds = await getMintIdsFromCMID({ connection: connection, CMID: cmID });
+      console.log("Fetching mint Ids, this will take a while, please don't close this window.");
+
+      const mintIds = await getMintIdsFromCMID({ connection: connection, CMID: CMID });
       if (mintIds.length === 0) {
         console.log(
           "Couldn't load mint IDs from your Candy Machine. Please make sure your Candy Machine ID is correct."
         );
       } else {
+        const base58Key = bs58.decode(UAKEY!);
+        console.log("Updating metadata, this will take a while, again :) please don't close this window.");
+
         const result = await updateMetadataUrls({
           connection: connection,
           mintIds: mintIds,
-          projectId: projectId,
-          UAPrivateKey: new TextEncoder().encode(uaKey),
+          projectId: PROJECTID,
+          UAPrivateKey: base58Key,
         });
 
         if (result) {
@@ -38,8 +40,9 @@ async function init() {
           );
         }
       }
-    } catch (_) {
-      console.log("Couldn't connect to your RPC node. Please check your RPC node URL");
+    } catch (e) {
+      console.log(e);
+      console.log("An error occurred. Please check your RPC node URL and Update Authority Private key");
     }
   }
 }
