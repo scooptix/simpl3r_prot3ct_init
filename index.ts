@@ -1,3 +1,9 @@
+/*
+  Changes the metadata URL of all NFTs created by the provided Candy Machine.
+  NOTE: Please make sure the provided projectId is correct, otherwise your NFTs will no longer show any metadata.
+  All changes are revertable, we store your original metadata as well as the original links, however we recommend a backup of your own.
+*/
+
 import * as web3 from "@solana/web3.js";
 import bs58 from "bs58";
 import getMintIdsFromCMID from "./utils/get_mintIds_from_CMID";

@@ -18,32 +18,37 @@ export async function updateMetadataUrls({
   const metaplex = Metaplex.make(connection)
     .use(keypairIdentity(Keypair.fromSecretKey(UAPrivateKey)))
     .use(bundlrStorage());
-
+  let i = 0;
   try {
-    await Promise.all(
-      mintIds.map(async (mintId) => {
-        const nft = await metaplex
-          .nfts()
-          .findByMint({ mintAddress: toPublicKey(mintId) })
-          .run();
+    while (mintIds.length > 0) {
+      const batch = mintIds.splice(0, 100);
 
-        //nfts().update() sometimes changes the data but times out, if that happens make sure we continue
-        // https://github.com/metaplex-foundation/js/issues/331
-        setTimeout(() => {
+      await Promise.all(
+        batch.map(async (mintId) => {
+          const nft = await metaplex
+            .nfts()
+            .findByMint({ mintAddress: toPublicKey(mintId) })
+            .run();
+
+          //nfts().update() sometimes changes the data but times out, if that happens make sure we continue
+          // https://github.com/metaplex-foundation/js/issues/331
+          setTimeout(() => {
+            return;
+          }, 30000);
+
+          // await metaplex
+          //   .nfts()
+          //   .update({
+          //     nftOrSft: nft,
+          //     uri: `https://us-central1-simpl3r.cloudfunctions.net/m?id=${mintId}&pid=${projectId}`,
+          //   })
+          //   .run();
+
           return;
-        }, 30000);
-
-        await metaplex
-          .nfts()
-          .update({
-            nftOrSft: nft,
-            uri: `https://us-central1-simpl3r.cloudfunctions.net/m?id=${mintId}&pid=${projectId}`,
-          })
-          .run();
-
-        return;
-      })
-    );
+        })
+      );
+      console.log(`Progress: ${++i * 100}/${mintIds.length}`);
+    }
 
     return true;
   } catch (_) {
