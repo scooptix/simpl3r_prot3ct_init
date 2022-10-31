@@ -24,7 +24,6 @@ export default async function getMintIdsFromCMID({
     1 + 32 + 32 + 4 + MAX_NAME_LENGTH + 4 + MAX_URI_LENGTH + 4 + MAX_SYMBOL_LENGTH + 2 + 1 + 4;
 
   const TOKEN_METADATA_PROGRAM = new PublicKey("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s");
-  const CANDY_MACHINE_V2_PROGRAM = new PublicKey("cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ");
   const candyMachineId = new PublicKey(CMID);
 
   const getMintAddresses = async (firstCreatorAddress: PublicKey) => {
@@ -45,17 +44,14 @@ export default async function getMintIdsFromCMID({
         },
       ],
     });
-
+    console.log(metadataAccounts.length);
     return metadataAccounts.map((metadataAccountInfo) => bs58.encode(metadataAccountInfo.account.data));
   };
 
   try {
-    const getCandyMachineCreator = async (candyMachine: PublicKey): Promise<[PublicKey, number]> =>
-      PublicKey.findProgramAddress([Buffer.from("candy_machine"), candyMachine.toBuffer()], CANDY_MACHINE_V2_PROGRAM);
-
-    const candyMachineCreator = await getCandyMachineCreator(candyMachineId);
-    return getMintAddresses(candyMachineCreator[0]);
-  } catch (_) {
+    return getMintAddresses(candyMachineId);
+  } catch (e) {
+    console.log(e);
     return [];
   }
 }
