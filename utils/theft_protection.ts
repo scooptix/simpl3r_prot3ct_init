@@ -41,13 +41,16 @@ export async function updateMetadataUrls({
               return;
             }, 30000);
 
-            await metaplex
-              .nfts()
-              .update({
-                nftOrSft: nft,
-                uri: `https://us-central1-simpl3r.cloudfunctions.net/m?id=${mintId}&pid=${projectId}`,
-              })
-              .run();
+            // In case this is rerun (e.g. if there were errors in a preivous run), make sure we only update NFTs that haven't been updated yet.
+            if (!nft.uri.includes("us-central1-simpl3r.cloudfunctions.net")) {
+              await metaplex
+                .nfts()
+                .update({
+                  nftOrSft: nft,
+                  uri: `https://us-central1-simpl3r.cloudfunctions.net/m?id=${mintId}&pid=${projectId}`,
+                })
+                .run();
+            }
           } catch (_) {
             console.log(
               `An error occurred updating the NFT with mint ID ${mintId}. The update most likely didn't complete. You can use the file "update_with_mintIds" to rerun any failed updates. If this occurres frequently, please make sure your RPC node can handle ~100 requests / second or reduce the batch size above`
