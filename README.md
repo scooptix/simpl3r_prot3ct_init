@@ -22,7 +22,7 @@ If you want to test this on a single NFT before applying it to the entire collec
 
 If you are encountering errors during the execution, note the logged mint Ids and use `update_with_mintIds.ts` to rerun speficic IDs.
 
-If you encounter a large number of such errors, make sure you are using a RPC Node that can handle large quantities of requests, or reduce the `BATCH_SIZE` in `theft_protection.ts`
+If you encounter a large number of such errors, make sure you are using a RPC Node that can handle large quantities of requests, or reduce the `BATCH_SIZE` in `theft_protection.ts` and make sure you have sufficient funds in your Update Authority wallet (at least 0.1 SOL, transaction cost per NFT is 0.000005 SOL)
 
 
 **CONFIG**
@@ -36,3 +36,5 @@ Project ID: Your Simpl3r project ID. You can copy it from the Prot3ct setup page
 Update Authority Private Key: The private key of your wallet that holds the Update Authority to all your NFTs. You can export it from your Phantom wallet in Security & Privacy.
 
 RPC Node: Url to your solana mainnet-beta RPC node. If you do not have access to a RPC Node, please contact your Simpl3r representative.
+
+Creator Wallet: Your Creator Wallet public key from which we will deduct 5% of the royalties as payment for Prot3ct. This can be reverted at any time.
