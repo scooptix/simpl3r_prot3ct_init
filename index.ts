@@ -8,7 +8,7 @@ import * as web3 from "@solana/web3.js";
 import bs58 from "bs58";
 import getMintIdsFromCMID from "./utils/get_mintIds_from_CMID";
 import { updateMetadataUrls } from "./utils/theft_protection";
-import { CMID, PROJECTID, UAKEY, RPCNODE } from "./config.json";
+import { CMID, PROJECTID, UAKEY, RPCNODE, CREATOR_WALLET } from "./config.json";
 
 async function init() {
   console.log("Welcome to the Simpl3r Prot3ct initializer.");
@@ -36,6 +36,7 @@ async function init() {
           mintIds: mintIds,
           projectId: PROJECTID,
           UAPrivateKey: base58Key,
+          creatorWallet: CREATOR_WALLET,
         });
 
         if (result) {
