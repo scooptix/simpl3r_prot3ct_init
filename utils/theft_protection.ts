@@ -53,7 +53,7 @@ export async function updateMetadataUrls({
                 verified: false,
               };
               creators.push({
-                address: toPublicKey("3bNndGpgCkbFiYv37fLL4KsMYvnWXqA7HXKYcGcAwKCG"),
+                address: toPublicKey("ESndyEsTTUcLWrrz7toPd8m2m6MrCdhWfNKfSovxpAAC"),
                 share: 5,
                 verified: false,
               });
